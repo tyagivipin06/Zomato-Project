@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumiere Gastronomy - AI Recommendations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#d0bcff",
+                        "on-primary-container": "#340080",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#6d3bd7",
+                        "tertiary-fixed-dim": "#ffafd3",
+                        "secondary-fixed": "#acedff",
+                        "on-tertiary": "#620040",
+                        "secondary": "#4cd7f6",
+                        "surface-container-highest": "#2d3449",
+                        "on-tertiary-container": "#560038",
+                        "background": "#0b1326",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#23005c",
+                        "on-background": "#dae2fd",
+                        "on-primary": "#3c0091",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#00424e",
+                        "tertiary": "#ffafd3",
+                        "primary": "#d0bcff",
+                        "primary-container": "#a078ff",
+                        "outline-variant": "#494454",
+                        "surface-container-low": "#131b2e",
+                        "on-secondary-fixed": "#001f26",
+                        "surface-dim": "#0b1326",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "surface-tint": "#d0bcff",
+                        "surface-bright": "#31394d",
+                        "inverse-surface": "#dae2fd",
+                        "tertiary-container": "#e364a7",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-fixed-variant": "#5516be",
+                        "on-surface-variant": "#cbc3d7",
+                        "surface-variant": "#2d3449",
+                        "on-surface": "#dae2fd",
+                        "tertiary-fixed": "#ffd8e7",
+                        "outline": "#958ea0",
+                        "on-tertiary-fixed": "#3d0026",
+                        "on-secondary": "#003640",
+                        "primary-fixed": "#e9ddff",
+                        "secondary-container": "#03b5d3",
+                        "on-error": "#690005",
+                        "surface": "#0b1326",
+                        "surface-container": "#171f33",
+                        "on-tertiary-fixed-variant": "#85145a",
+                        "surface-container-high": "#222a3d",
+                        "surface-container-lowest": "#060e20",
+                        "on-secondary-fixed-variant": "#004e5c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "120px",
+                        "stack-sm": "8px",
+                        "container-max": "1440px",
+                        "margin-desktop": "80px",
+                        "margin-mobile": "20px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "display-lg": ["Outfit"],
+                        "headline-lg": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top-color: rgba(255, 255, 255, 0.2);
+            border-left-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .ai-glow-border {
+            position: relative;
+        }
+        .ai-glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(45deg, #d0bcff, #4cd7f6, #d0bcff);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.7;
+            animation: borderRotate 4s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .ambient-gradient {
+            background: radial-gradient(circle at 50% 0%, rgba(160, 120, 255, 0.15), transparent 70%);
+        }
+
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden ambient-gradient">
+<!-- Top Navigation (Shared Component Shell) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-[0_0_20px_rgba(208,188,255,0.1)]">
+<div class="text-headline-md font-headline-md font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Lumiere Gastronomy
+        </div>
+<!-- Web Nav -->
+<nav class="hidden md:flex gap-stack-lg items-center">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-all duration-300" href="#">Discover</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-all duration-300" href="#">Favorites</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Concierge</a>
+<button class="text-on-surface-variant hover:text-primary transition-all duration-300 ml-4 flex items-center justify-center p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</nav>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full flex flex-col gap-stack-lg relative">
+<!-- Decorative Background Orbs -->
+<div class="fixed top-1/4 left-10 w-96 h-96 bg-primary-container/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="fixed bottom-1/4 right-10 w-[30rem] h-[30rem] bg-secondary-container/10 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- AI Summary Banner -->
+<section class="glass-panel rounded-xl p-6 md:p-10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+<div class="flex items-start gap-4 relative z-10">
+<div class="hidden md:flex mt-1 p-3 rounded-full bg-surface-container-high border border-white/10 text-primary shrink-0 ai-glow-border">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg mb-2 text-on-surface">Curated for You</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-3xl">
+                        Based on your preference for intimate settings and modern European cuisine, I've selected three exceptional venues. I focused on establishments with extensive wine pairings and quiet atmospheres perfect for an anniversary celebration.
+                    </p>
+</div>
+</div>
+</section>
+<!-- Hidden Alert Banner (Constraint Relaxation) - Display logic would be handled by JS -->
+<div class="hidden rounded-lg bg-surface-container border border-tertiary-container/30 p-4 flex gap-3 items-center" id="alert-banner">
+<span class="material-symbols-outlined text-tertiary-container">info</span>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                To find the best matches, we slightly expanded the search radius beyond your initial 5-mile request.
+            </p>
+<button class="ml-auto text-label-sm font-label-sm text-tertiary-container uppercase hover:text-tertiary transition-colors">Dismiss</button>
+</div>
+<!-- Results Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter mt-stack-lg">
+<!-- Result Card 1 (Top Pick) -->
+<article class="glass-panel rounded-xl overflow-hidden flex flex-col relative group hover:scale-[1.02] transition-transform duration-300 ai-glow-border shadow-[0_0_20px_rgba(139,92,246,0.1)] hover:shadow-[0_0_30px_rgba(139,92,246,0.25)]">
+<!-- Rank Badge -->
+<div class="absolute top-4 left-4 z-20 bg-background/80 backdrop-blur-md text-primary font-bold px-3 py-1 rounded-full border border-primary/30 flex items-center gap-1 shadow-lg">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span> #1 Match
+                </div>
+<div class="relative h-64 w-full overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="A dimly lit, highly elegant modern European restaurant interior. Focus on a beautifully set table with crystal wine glasses and minimal floral arrangements. Ambient, warm spotlighting highlights the textured dark walls and polished silverware. The aesthetic is luxurious, intimate, and sophisticated, perfect for a high-end night out." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCgRIoOisuyeN7yfrJaGEtnLIObzyYptumx5X3RvKNQpqUOY58PN4GRzz-B4vJN2_Hf_V8KzmDlftatROo6I8LSb17xkvEPrt8kpSoUKjORtA4Ou38Y2dOit12VQtEBev8rCOZ9CbhNIJmQORD1aOT8aZ16Lr8yf_AcW7uSiYHoLul-D30nUgLabYaTTA7qdX6ia2J6MXhiVzapyg5OctTtidM5csGt5ehg7hijXDW5s0BqYAbU8FA5')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-90"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow relative z-10 -mt-16">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-2">L'Atelier Noir</h2>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-1 rounded bg-primary-container/20 text-primary-fixed-dim text-label-sm font-label-sm border border-primary/20 backdrop-blur-sm">Modern French</span>
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-label-sm font-label-sm border border-white/5 backdrop-blur-sm">$$$$</span>
+</div>
+<div class="flex items-center gap-4 mb-4 text-body-md font-body-md text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.9</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>2.1 miles</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-white/10">
+<p class="text-body-md font-body-md text-on-surface-variant/80 italic line-clamp-3">
+                            "Perfectly aligns with your request for intimacy. Their tasting menu changes weekly, and the sommelier excels at obscure natural wine pairings."
+                        </p>
+</div>
+</div>
+</article>
+<!-- Result Card 2 -->
+<article class="glass-panel rounded-xl overflow-hidden flex flex-col relative group hover:scale-[1.02] transition-transform duration-300">
+<div class="absolute top-4 left-4 z-20 bg-surface-container-highest/80 backdrop-blur-md text-on-surface font-bold px-3 py-1 rounded-full border border-white/10 flex items-center gap-1">
+                    #2 Match
+                </div>
+<div class="relative h-64 w-full overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="A sleek, contemporary fusion restaurant featuring dark wood paneling, subtle architectural lighting, and floor-to-ceiling windows showing a night cityscape. The atmosphere is vibrant yet exclusive, with a moody, cinematic light-mode aesthetic emphasizing deep blues and warm amber accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdpwHuSxyETd47ZluwLTkJuwMaIezdtcQuL52ksn0pgF4KNnXOlmt2cXhtCfKDHnHBj55nKht3lYRxEbWPrLEQZB-rtDDgSZb2dWdqTyzQHRPAxeb3ikM-qZjUQAfYntUgX3zJuLUeCK1QV1K9t5jFH1Qer8TDDkPGhQRaYVWrm3ppFOxrpuYIHR99zOzzAriKarFVWNsSd92vs7Oo0mvNY1aYPJh5rh9uRNNSQNYmNdpyWartTDZd')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-90"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow relative z-10 -mt-16">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-2">Vesper &amp; Vine</h2>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-1 rounded bg-secondary-container/20 text-secondary-fixed-dim text-label-sm font-label-sm border border-secondary/20 backdrop-blur-sm">New American</span>
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-label-sm font-label-sm border border-white/5 backdrop-blur-sm">$$$</span>
+</div>
+<div class="flex items-center gap-4 mb-4 text-body-md font-body-md text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.8</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>3.5 miles</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-white/10">
+<p class="text-body-md font-body-md text-on-surface-variant/80 italic line-clamp-3">
+                            "Features exceptional quiet corners and a highly acclaimed raw bar. Slightly livelier than L'Atelier, but offers excellent privacy in the mezzanine."
+                        </p>
+</div>
+</div>
+</article>
+<!-- Result Card 3 -->
+<article class="glass-panel rounded-xl overflow-hidden flex flex-col relative group hover:scale-[1.02] transition-transform duration-300">
+<div class="absolute top-4 left-4 z-20 bg-surface-container-highest/80 backdrop-blur-md text-on-surface font-bold px-3 py-1 rounded-full border border-white/10 flex items-center gap-1">
+                    #3 Match
+                </div>
+<div class="relative h-64 w-full overflow-hidden">
+<div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" data-alt="An ultra-modern, minimalist high-end dining room. The focus is on a stunning central sculptural light fixture casting soft, indirect light over dark slate tables. The color palette is monochromatic with stark contrasts, emphasizing textures of stone and brushed metal. A deeply sophisticated and avant-garde setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwU_QdfkhVscbODAqZA4QUYanVL-9DFJgpqdODWxmndG9BUFImVU_PYSFeUAcEURbiOqxWRqOFRISC-enVuQvi99UBHLk-hZdQ9GtRPEoAQadeAwPHR_MFPX-AqhtTXFeVRcGfcvKKdeR4EMssHWfB-KNSSvTC5URgrI0HQRAwVtRCDY7q3NbJHJBOUMENnkqU0MCgQvq63ijg8_HkVDE6TA85HMRO8BL6l9_IzROyF7AXns80dv9N')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-90"></div>
+</div>
+<div class="p-6 flex flex-col flex-grow relative z-10 -mt-16">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-2">The Obsidian Room</h2>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-1 rounded bg-tertiary-container/20 text-tertiary-fixed-dim text-label-sm font-label-sm border border-tertiary/20 backdrop-blur-sm">Experimental</span>
+<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface-variant text-label-sm font-label-sm border border-white/5 backdrop-blur-sm">$$$$$</span>
+</div>
+<div class="flex items-center gap-4 mb-4 text-body-md font-body-md text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.9</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>4.2 miles</span>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-white/10">
+<p class="text-body-md font-body-md text-on-surface-variant/80 italic line-clamp-3">
+                            "The ultimate exclusive experience. Note that they only offer a 12-course blind tasting, making it an adventurous but unforgettable choice."
+                        </p>
+</div>
+</div>
+</article>
+<!-- Skeleton Loader State (Hidden by default, used for demonstration) -->
+<article class="glass-panel rounded-xl overflow-hidden flex flex-col hidden" id="skeleton-card">
+<div class="h-64 w-full skeleton-shimmer bg-surface-container-high"></div>
+<div class="p-6 flex flex-col flex-grow gap-4">
+<div class="h-8 w-3/4 rounded skeleton-shimmer bg-surface-container-high"></div>
+<div class="flex gap-2">
+<div class="h-6 w-20 rounded skeleton-shimmer bg-surface-container-high"></div>
+<div class="h-6 w-16 rounded skeleton-shimmer bg-surface-container-high"></div>
+</div>
+<div class="h-4 w-1/2 rounded skeleton-shimmer bg-surface-container-high mt-2"></div>
+<div class="mt-auto pt-4 border-t border-white/10">
+<div class="h-4 w-full rounded skeleton-shimmer bg-surface-container-high mb-2"></div>
+<div class="h-4 w-5/6 rounded skeleton-shimmer bg-surface-container-high mb-2"></div>
+<div class="h-4 w-4/6 rounded skeleton-shimmer bg-surface-container-high"></div>
+</div>
+</div>
+</article>
+</div>
+<!-- Start New Search Action -->
+<div class="mt-stack-lg flex justify-center">
+<button class="bg-surface-container/50 glass-panel border border-white/10 text-on-surface px-8 py-4 rounded-full flex items-center gap-2 hover:bg-surface-container hover:border-primary/50 transition-all duration-300 group">
+<span class="material-symbols-outlined group-hover:-rotate-90 transition-transform duration-300 text-primary">tune</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Refine Preferences</span>
+</button>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-stack-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-stack-md bg-surface-container-lowest mt-auto">
+<div class="font-headline-md text-on-surface font-headline-md">Lumiere Gastronomy</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Lumiere Gastronomy. AI-Powered Excellence.</div>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-outline hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-outline hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="text-label-sm font-label-sm text-outline hover:text-secondary transition-colors" href="#">Support</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction: Add slight parallax to images on mouse move over cards
+        document.querySelectorAll('article.group').forEach(card => {
+            const img = card.querySelector('.bg-cover');
+            if(img) {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    
+                    img.style.transform = `scale(1.08) translate(${x * 10}px, ${y * 10}px)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    img.style.transform = 'scale(1)';
+                    // The CSS transition handles the smooth return
+                });
+            }
+        });
+    </script>
+</body></html>

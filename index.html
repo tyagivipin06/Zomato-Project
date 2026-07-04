@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Next Meal - Restaurant Search</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#e23744",
+                        "primary-hover": "#c82333",
+                        background: "#0f0f13",
+                        surface: "#1a1a22",
+                        "on-surface": "#f0f0f5",
+                        "on-surface-variant": "#9090a8",
+                        outline: "rgba(255,255,255,0.1)",
+                    },
+                    fontFamily: {
+                        body: ["Inter", "sans-serif"],
+                        headline: ["Outfit", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f0f13;
+            color: #f0f0f5;
+            background-image: 
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(226,55,68,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(226,55,68,0.08) 0%, transparent 55%);
+        }
+        .glass-panel {
+            background: rgba(26, 26, 34, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: #e23744;
+            box-shadow: 0 0 0 2px rgba(226, 55, 68, 0.2);
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #e23744;
+            cursor: pointer;
+            margin-top: -8px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        .radio-pill input:checked + div {
+            background: rgba(226, 55, 68, 0.15);
+            border-color: #e23744;
+            color: #e23744;
+        }
+        /* Allow clearing inputs easily */
+        input::-webkit-calendar-picker-indicator {
+            display: none !important;
+        }
+        /* Fix Chrome autofill/datalist background issue */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #1a1a22 inset !important;
+            -webkit-text-fill-color: #f0f0f5 !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body antialiased selection:bg-primary selection:text-white">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 h-20 bg-background/80 backdrop-blur-md border-b border-white/5 shadow-sm">
+        <div class="text-2xl font-headline font-bold text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+            Next Meal
+        </div>
+    </header>
+
+    <!-- Search View -->
+    <main id="search-view" class="flex-grow flex items-center justify-center pt-32 pb-20 px-4 md:px-12 relative z-10 w-full max-w-4xl mx-auto">
+        <div class="w-full glass-panel rounded-2xl p-8 md:p-12 shadow-2xl relative">
+            <div class="mb-10 text-center">
+                <h1 class="font-headline text-4xl md:text-5xl text-on-surface mb-3 font-bold tracking-tight">
+                    Find Your Next Meal
+                </h1>
+                <p class="font-body text-lg text-on-surface-variant">
+                    Let our AI find the best restaurants for you based on your preferences.
+                </p>
+            </div>
+            
+            <form class="space-y-8 relative z-10" onsubmit="event.preventDefault();">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Location -->
+                    <div class="flex flex-col gap-2 relative group">
+                        <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider pl-1">Location</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors z-10">location_on</span>
+                            <input class="w-full h-14 rounded-xl pl-12 pr-4 text-gray-900 bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:outline-none shadow-inner" 
+                                   list="locations" 
+                                   placeholder="e.g., Bangalore, Indiranagar" 
+                                   type="text" 
+                                   onfocus="this.value=''" />
+                            <datalist id="locations"></datalist>
+                        </div>
+                    </div>
+                    <!-- Cuisine -->
+                    <div class="flex flex-col gap-2 relative group">
+                        <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider pl-1">Cuisine (Optional)</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors z-10">restaurant</span>
+                            <input class="w-full h-14 rounded-xl pl-12 pr-4 text-gray-900 bg-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:outline-none shadow-inner" 
+                                   list="cuisines" 
+                                   placeholder="e.g., North Indian, Chinese" 
+                                   type="text" 
+                                   onfocus="this.value=''" />
+                            <datalist id="cuisines"></datalist>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider pl-1">Budget</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="radio-pill cursor-pointer">
+                            <input class="sr-only" name="budget" type="radio" value="accessible"/>
+                            <div class="glass-input h-14 rounded-xl flex items-center justify-center border border-white/10 text-on-surface-variant font-medium transition-all text-sm md:text-base">
+                                Budget Friendly
+                            </div>
+                        </label>
+                        <label class="radio-pill cursor-pointer">
+                            <input checked class="sr-only" name="budget" type="radio" value="premium"/>
+                            <div class="glass-input h-14 rounded-xl flex items-center justify-center border border-white/10 text-on-surface-variant font-medium transition-all text-sm md:text-base">
+                                Medium
+                            </div>
+                        </label>
+                        <label class="radio-pill cursor-pointer">
+                            <input class="sr-only" name="budget" type="radio" value="exclusive"/>
+                            <div class="glass-input h-14 rounded-xl flex items-center justify-center border border-white/10 text-on-surface-variant font-medium transition-all text-sm md:text-base">
+                                High End
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Rating -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-end pl-1">
+                        <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Minimum Rating</label>
+                        <span class="text-xl font-headline text-primary font-bold" id="rating-val">4.5+</span>
+                    </div>
+                    <div class="pt-2 pb-1">
+                        <input class="w-full" max="5.0" min="3.0" oninput="document.getElementById('rating-val').innerText = this.value + '+'" step="0.1" type="range" value="4.5"/>
+                        <div class="flex justify-between text-xs text-on-surface-variant mt-2 px-1 font-medium">
+                            <span>3.0</span>
+                            <span>4.0</span>
+                            <span>5.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Preferences -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider pl-1">Any specific requests? (Optional)</label>
+                    <textarea class="glass-input w-full rounded-xl p-4 text-on-surface placeholder:text-black resize-none" 
+                              placeholder="e.g., family-friendly, rooftop, vegan options..." rows="2"></textarea>
+                </div>
+
+                <!-- Submit Action -->
+                <div class="pt-4">
+                    <button class="w-full h-14 rounded-xl bg-primary hover:bg-primary-hover transition-colors flex items-center justify-center gap-2 text-white font-headline text-lg font-bold tracking-wide shadow-lg" type="submit">
+                        <span class="material-symbols-outlined">search</span>
+                        Find Restaurants
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Loading View -->
+    <main id="loading-view" class="hidden flex-grow flex items-center justify-center pt-32 pb-20 relative z-10 w-full max-w-4xl mx-auto">
+        <div class="flex flex-col items-center gap-4">
+            <span class="material-symbols-outlined animate-spin text-primary" style="font-size: 3rem;">autorenew</span>
+            <p class="text-on-surface-variant font-headline text-xl">Curating your recommendations...</p>
+        </div>
+    </main>
+
+    <!-- Recommendations View -->
+    <main id="recommendations-view" class="hidden flex-grow pt-28 pb-20 px-4 md:px-12 max-w-7xl mx-auto w-full flex flex-col gap-8 relative z-10">
+        
+        <section class="glass-panel rounded-2xl p-6 md:p-8 flex items-start gap-4">
+            <div class="hidden md:flex mt-1 p-2 rounded-full bg-surface border border-white/10 text-primary shrink-0">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-headline font-bold mb-2 text-on-surface tracking-tight">AI Summary</h1>
+                <p id="summary-text" class="text-base text-on-surface-variant leading-relaxed"></p>
+            </div>
+        </section>
+
+        <div id="alert-banner" class="hidden rounded-xl bg-yellow-900/30 border border-yellow-500/30 p-4 flex gap-3 items-center">
+            <span class="material-symbols-outlined text-yellow-400">info</span>
+            <p id="alert-text" class="text-sm font-medium text-yellow-100/90"></p>
+            <button onclick="document.getElementById('alert-banner').classList.add('hidden')" class="ml-auto text-xs font-bold text-yellow-400 uppercase tracking-wider hover:text-yellow-300 transition-colors">Dismiss</button>
+        </div>
+
+        <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Rendered via JS -->
+        </div>
+
+        <div class="mt-8 flex justify-center">
+            <button onclick="showSearch()" class="glass-panel border border-white/10 text-on-surface px-8 py-4 rounded-full flex items-center gap-2 hover:bg-surface transition-all duration-300 group font-bold shadow-lg">
+                <span class="material-symbols-outlined text-primary">arrow_back</span>
+                <span class="text-sm uppercase tracking-wider">Modify Search</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-6 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 bg-background/80 border-t border-white/5 relative z-10 mt-auto">
+        <div class="font-headline font-bold text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+            Next Meal
+        </div>
+        <div class="text-sm text-on-surface-variant/60">
+            © 2024 Next Meal Recommendations.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Fetch locations and cuisines
+            fetch('/api/v1/locations')
+                .then(r => r.json())
+                .then(data => {
+                    const dl = document.getElementById('locations');
+                    if (dl) dl.innerHTML = data.locations.map(l => `<option value="${l}"></option>`).join('');
+                });
+                
+            fetch('/api/v1/cuisines')
+                .then(r => r.json())
+                .then(data => {
+                    const dl = document.getElementById('cuisines');
+                    if (dl) dl.innerHTML = data.cuisines.map(c => `<option value="${c}"></option>`).join('');
+                });
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Get values
+                const location = document.querySelector('input[list="locations"]').value;
+                const cuisine = document.querySelector('input[list="cuisines"]').value;
+                const budget = document.querySelector('input[name="budget"]:checked')?.value || "premium";
+                const minRating = parseFloat(document.querySelector('input[type="range"]').value);
+                const additional = document.querySelector('textarea').value;
+                
+                if (!location) {
+                    alert("Location is required.");
+                    return;
+                }
+
+                // Map frontend budget terms to backend
+                const budgetMap = { "accessible": "low", "premium": "medium", "exclusive": "high" };
+                
+                const payload = {
+                    location: location,
+                    budget: budgetMap[budget] || "medium",
+                    min_rating: minRating,
+                    cuisine: cuisine || null,
+                    additional: additional || null
+                };
+
+                // UI states
+                document.getElementById('search-view').classList.add('hidden');
+                document.getElementById('loading-view').classList.remove('hidden');
+
+                try {
+                    const res = await fetch('/api/v1/recommend', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw new Error(err.detail || "Server error");
+                    }
+                    
+                    const data = await res.json();
+                    renderRecommendations(data);
+                    
+                    document.getElementById('loading-view').classList.add('hidden');
+                    document.getElementById('recommendations-view').classList.remove('hidden');
+                    window.scrollTo(0, 0);
+                    
+                } catch (err) {
+                    alert("Error: " + err.message);
+                    document.getElementById('loading-view').classList.add('hidden');
+                    document.getElementById('search-view').classList.remove('hidden');
+                }
+            });
+        });
+        
+        function renderRecommendations(data) {
+            document.getElementById('summary-text').innerText = data.summary;
+            
+            const banner = document.getElementById('alert-banner');
+            if (data.metadata.relaxation_applied) {
+                banner.classList.remove('hidden');
+                document.getElementById('alert-text').innerText = data.metadata.warnings.join(' ');
+            } else {
+                banner.classList.add('hidden');
+            }
+            
+            const grid = document.getElementById('results-grid');
+            grid.innerHTML = '';
+            
+            data.recommendations.forEach((rec, idx) => {
+                const defaultImages = [
+                    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80'
+                ];
+                const img = defaultImages[idx % defaultImages.length];
+                
+                const card = `
+                <article class="glass-panel rounded-2xl overflow-hidden flex flex-col relative group hover:-translate-y-1 transition-all duration-300 shadow-lg border border-white/5 hover:border-primary/30">
+                    <div class="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md text-primary font-bold px-3 py-1 rounded-full border border-primary/20 flex items-center gap-1 text-sm shadow-md">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span> #${rec.rank}
+                    </div>
+                    <div class="relative h-56 w-full overflow-hidden bg-surface">
+                        <div class="bg-cover bg-center w-full h-full group-hover:scale-105 transition-transform duration-700" style="background-image: url('${img}')"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a22] via-[#1a1a22]/40 to-transparent"></div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow relative z-10 -mt-16">
+                        <h2 class="text-xl font-headline font-bold text-on-surface mb-2">${rec.name}</h2>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-semibold border border-primary/20">${rec.cuisine}</span>
+                            <span class="px-2 py-1 rounded bg-white/5 text-on-surface-variant text-xs font-semibold border border-white/5">₹${rec.estimated_cost} for two</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-4 text-sm font-semibold text-on-surface">
+                            <div class="flex items-center gap-1 bg-green-600/20 text-green-400 px-2 py-0.5 rounded border border-green-500/20">
+                                <span>${rec.rating}</span>
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                            </div>
+                        </div>
+                        <div class="mt-auto pt-4 border-t border-white/10">
+                            <p class="text-sm text-on-surface-variant/80 italic leading-relaxed">"${rec.explanation}"</p>
+                        </div>
+                    </div>
+                </article>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        function showSearch() {
+            document.getElementById('recommendations-view').classList.add('hidden');
+            document.getElementById('search-view').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
