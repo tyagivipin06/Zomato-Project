@@ -8,10 +8,11 @@ from src.config import settings
 class PromptBuilder:
     @staticmethod
     def build_prompt(prefs: UserPreferences, candidates: List[Restaurant]) -> List[Dict[str, str]]:
+        top_k = min(len(candidates), settings.TOP_K_RECOMMENDATIONS)
         system_msg = (
             "You are an expert Zomato restaurant recommender. "
             "You will be provided with user preferences and a list of pre-filtered candidate restaurants. "
-            f"Your task is to select and rank the top {settings.TOP_K_RECOMMENDATIONS} restaurants from the given candidates based on how well they match the user's preferences. "
+            f"Your task is to select and rank the top {top_k} restaurants from the given candidates based on how well they match the user's preferences. "
             "Output MUST be in strict JSON format. "
             "The JSON must have this exact structure: "
             "{\"summary\": \"A short greeting and summary of your recommendations based on their preferences.\", "

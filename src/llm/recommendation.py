@@ -17,9 +17,11 @@ class RecommendationEnricher:
         candidate_map = {str(r.id): r for r in candidates}
         
         recs = []
+        seen_ids = set()
         for item in parsed_response.get("recommendations", []):
             r_id = str(item["id"])
-            if r_id in candidate_map:
+            if r_id in candidate_map and r_id not in seen_ids:
+                seen_ids.add(r_id)
                 recs.append(Recommendation(
                     restaurant_id=r_id,
                     name=candidate_map[r_id].name,
@@ -29,7 +31,7 @@ class RecommendationEnricher:
                     rank=item["rank"],
                     explanation=item["explanation"]
                 ))
-            else:
+            elif r_id not in candidate_map:
                 logger.warning(f"LLM recommended unknown restaurant ID: {r_id}")
                 
         # Sort by rank
